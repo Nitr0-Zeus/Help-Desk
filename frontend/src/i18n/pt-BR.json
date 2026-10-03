@@ -22,5 +22,19 @@
   "common.notFound": "Página não encontrada",
   "common.backToTickets": "Voltar para chamados",
   "placeholder.title": "Em construção na próxima etapa",
-  "placeholder.hint": "Esta tela fica pronta na etapa correspondente do plano."
+  "placeholder.hint": "Esta tela fica pronta na etapa correspondente do plano.",
+  "auth.email": "E-mail",
+  "auth.password": "Senha",
+  "auth.name": "Nome completo",
+  "auth.invite": "Código de convite",
+  "auth.inviteHint": "Opcional. Preencha para se registrar como agente.",
+  "auth.submit.login": "Entrar",
+  "auth.submit.register": "Criar conta",
+  "auth.switch.toRegister": "Não tem conta? Criar conta",
+  "auth.switch.toLogin": "Já tem conta? Entrar",
+  "auth.error.invalid": "E-mail ou senha inválidos",
+  "auth.error.generic": "Algo deu errado. Tente novamente.",
+  "auth.error.emailInUse": "Este e-mail já está cadastrado",
+  "auth.error.invalidInvite": "Convite inválido ou expirado",
+  "auth.error.expired": "Sua sessão expirou. Entre novamente."
 }

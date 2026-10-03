@@ -22,5 +22,19 @@
   "common.notFound": "Page not found",
   "common.backToTickets": "Back to tickets",
   "placeholder.title": "Coming up in the next step",
-  "placeholder.hint": "This screen lands in its corresponding plan step."
+  "placeholder.hint": "This screen lands in its corresponding plan step.",
+  "auth.email": "Email",
+  "auth.password": "Password",
+  "auth.name": "Full name",
+  "auth.invite": "Invite code",
+  "auth.inviteHint": "Optional. Fill it in to register as an agent.",
+  "auth.submit.login": "Sign in",
+  "auth.submit.register": "Create account",
+  "auth.switch.toRegister": "No account? Create one",
+  "auth.switch.toLogin": "Already have an account? Sign in",
+  "auth.error.invalid": "Invalid email or password",
+  "auth.error.generic": "Something went wrong. Try again.",
+  "auth.error.emailInUse": "This email is already registered",
+  "auth.error.invalidInvite": "Invalid or expired invite",
+  "auth.error.expired": "Your session expired. Please sign in again."
 }
