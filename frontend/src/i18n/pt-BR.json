@@ -110,5 +110,16 @@
   "comment.removeFile": "Remover",
   "comment.error.tooBig": "Arquivo maior que 10 MB:",
   "comment.error.badType": "Tipo de arquivo não permitido:",
-  "comment.error.generic": "Não foi possível enviar o comentário."
+  "comment.error.generic": "Não foi possível enviar o comentário.",
+  "metrics.summary": "Resumo",
+  "metrics.total": "Total de chamados",
+  "metrics.slaCompliance": "% dentro do SLA",
+  "metrics.avgFirstResponse": "1ª resposta (h)",
+  "metrics.avgResolution": "Resolução (h)",
+  "metrics.byStatus": "Por status",
+  "metrics.byAgent": "Por agente",
+  "metrics.empty": "Nenhum agente com dados ainda.",
+  "metrics.col.agent": "Agente",
+  "metrics.col.assigned": "Atribuídos",
+  "metrics.col.resolved": "Resolvidos"
 }

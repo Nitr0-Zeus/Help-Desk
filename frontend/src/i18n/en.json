@@ -110,5 +110,16 @@
   "comment.removeFile": "Remove",
   "comment.error.tooBig": "File larger than 10 MB:",
   "comment.error.badType": "File type not allowed:",
-  "comment.error.generic": "Could not send the comment."
+  "comment.error.generic": "Could not send the comment.",
+  "metrics.summary": "Summary",
+  "metrics.total": "Total tickets",
+  "metrics.slaCompliance": "% within SLA",
+  "metrics.avgFirstResponse": "1st response (h)",
+  "metrics.avgResolution": "Resolution (h)",
+  "metrics.byStatus": "By status",
+  "metrics.byAgent": "By agent",
+  "metrics.empty": "No agent data yet.",
+  "metrics.col.agent": "Agent",
+  "metrics.col.assigned": "Assigned",
+  "metrics.col.resolved": "Resolved"
 }
