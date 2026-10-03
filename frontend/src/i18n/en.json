@@ -121,5 +121,12 @@
   "metrics.empty": "No agent data yet.",
   "metrics.col.agent": "Agent",
   "metrics.col.assigned": "Assigned",
-  "metrics.col.resolved": "Resolved"
+  "metrics.col.resolved": "Resolved",
+  "sla.howItWorks": "Deadlines in business hours (Mon–Fri, 09:00–18:00, America/Sao_Paulo). The clock pauses while the ticket waits for the customer.",
+  "sla.firstResponse": "1st response",
+  "sla.resolution": "Resolution",
+  "sla.active": "Active",
+  "sla.hoursUnit": "h",
+  "sla.activeYes": "Active",
+  "sla.activeNo": "Inactive"
 }

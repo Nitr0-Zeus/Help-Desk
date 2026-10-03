@@ -121,5 +121,12 @@
   "metrics.empty": "Nenhum agente com dados ainda.",
   "metrics.col.agent": "Agente",
   "metrics.col.assigned": "Atribuídos",
-  "metrics.col.resolved": "Resolvidos"
+  "metrics.col.resolved": "Resolvidos",
+  "sla.howItWorks": "Prazos em horas úteis (seg–sex, 09:00–18:00, America/Sao_Paulo). O relógio pausa enquanto o chamado aguarda o cliente.",
+  "sla.firstResponse": "1ª resposta",
+  "sla.resolution": "Resolução",
+  "sla.active": "Ativa",
+  "sla.hoursUnit": "h",
+  "sla.activeYes": "Ativa",
+  "sla.activeNo": "Inativa"
 }
