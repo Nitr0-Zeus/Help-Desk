@@ -1,7 +1,8 @@
 import { useI18n } from '../../i18n/I18nProvider'
 import { formatDate } from '../../lib/format'
+import { downloadAttachment } from '../api/TicketsApi'
 import { StatusBadge } from './Badges'
-import type { TimelineEntry } from '../api/TicketsApi'
+import type { AttachmentView, TimelineEntry } from '../api/TicketsApi'
 
 function initials(name: string): string {
   return name
@@ -68,6 +69,24 @@ export function Timeline({ entries }: { entries: TimelineEntry[] }) {
               <p className="mt-2.5 text-sm whitespace-pre-wrap text-[var(--text)]">
                 {entry.body}
               </p>
+              {entry.attachments && entry.attachments.length > 0 && (
+                <ul className="mt-3 space-y-1 border-t border-[var(--border)] pt-2.5">
+                  {entry.attachments.map((attachment: AttachmentView) => (
+                    <li key={attachment.id}>
+                      <button
+                        type="button"
+                        onClick={() => downloadAttachment(attachment.id, attachment.filename)}
+                        className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--accent)] transition-colors duration-150 hover:underline underline-offset-4"
+                      >
+                        {attachment.filename}
+                        <span className="font-normal text-[var(--text-muted)]">
+                          ({Math.max(1, Math.round(attachment.size / 1024))} KB)
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           )
         }

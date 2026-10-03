@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -45,6 +46,14 @@ public class AttachmentService {
                             storageName, file.getContentType(), file.getSize()));
                 })
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Attachment> findByTimelineEntryIds(Collection<Long> entryIds) {
+        if (entryIds.isEmpty()) {
+            return List.of();
+        }
+        return attachments.findByTimelineEntryIdIn(entryIds);
     }
 
     @Transactional(readOnly = true)

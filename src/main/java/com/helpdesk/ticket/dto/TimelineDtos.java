@@ -18,7 +18,8 @@ public final class TimelineDtos {
 
     public record TimelineEntryResponse(Long id, TimelineType type, EventType eventType,
                                         Long authorId, String authorName, String body,
-                                        String payload, Instant createdAt) {
+                                        String payload, Instant createdAt,
+                                        List<AttachmentView> attachments) {
     }
 
     public record TimelinePage(List<TimelineEntryResponse> content, int page, int size,

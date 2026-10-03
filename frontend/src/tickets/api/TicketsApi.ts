@@ -1,4 +1,4 @@
-﻿import { apiFetch } from '../../api/client'
+﻿import { apiBlob, apiFetch } from '../../api/client'
 import type { CreateTicketPayload, Page, Ticket, TicketFilters, TicketStatus } from '../types'
 
 export async function listTickets(filters: TicketFilters): Promise<Page<Ticket>> {
@@ -35,6 +35,7 @@ export interface TimelineEntry {
   body: string | null
   payload: string | null
   createdAt: string
+  attachments: AttachmentView[]
 }
 
 export async function getTicket(id: number): Promise<Ticket> {
@@ -66,4 +67,50 @@ export async function getTimeline(
   size = 100,
 ): Promise<Page<TimelineEntry>> {
   return apiFetch<Page<TimelineEntry>>(`/tickets/${id}/timeline?page=${page}&size=${size}`)
+}
+
+export interface AttachmentView {
+  id: number
+  filename: string
+  contentType: string
+  size: number
+}
+
+export interface CommentResponse {
+  id: number
+  type: 'COMMENT' | 'EVENT'
+  eventType: string | null
+  authorId: number | null
+  authorName: string | null
+  body: string | null
+  payload: string | null
+  createdAt: string
+  attachments: AttachmentView[]
+}
+
+export async function postComment(
+  ticketId: number,
+  body: string,
+  files: File[],
+): Promise<CommentResponse> {
+  const form = new FormData()
+  form.append('body', body)
+  for (const file of files) form.append('files', file)
+  return apiFetch<CommentResponse>(`/tickets/${ticketId}/comments`, {
+    method: 'POST',
+    body: form,
+  })
+}
+
+/** Authenticated download: fetch -> Blob -> object URL -> click (spec decision 8). */
+export async function downloadAttachment(id: number, filename: string): Promise<void> {
+  const blob = await apiBlob(`/attachments/${id}`)
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = filename
+  document.body.appendChild(anchor)
+  anchor.click()
+  anchor.remove()
+  setTimeout(() => URL.revokeObjectURL(url), 1_000)
 }

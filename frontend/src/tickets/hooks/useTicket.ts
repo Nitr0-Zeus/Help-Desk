@@ -4,6 +4,7 @@ import {
   deleteTicket,
   getTicket,
   getTimeline,
+  postComment,
   transitionTicket,
   unassignTicket,
 } from '../api/TicketsApi'
@@ -54,6 +55,15 @@ export function useDeleteTicket(id: number) {
   const invalidate = useInvalidateTicket(id)
   return useMutation({
     mutationFn: () => deleteTicket(id),
+    onSuccess: invalidate,
+  })
+}
+
+export function usePostComment(id: number) {
+  const invalidate = useInvalidateTicket(id)
+  return useMutation({
+    mutationFn: ({ body, files }: { body: string; files: File[] }) =>
+      postComment(id, body, files),
     onSuccess: invalidate,
   })
 }

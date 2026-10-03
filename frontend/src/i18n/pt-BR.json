@@ -103,5 +103,12 @@
   "event.SLA_RESUMED": "SLA reativado",
   "event.SLA_BREACHED": "SLA estourado",
   "event.ASSIGNED": "Atribuição",
-  "detail.waitingBanner": "Este chamado aguarda sua resposta. Comente abaixo para reativar o atendimento."
+  "detail.waitingBanner": "Este chamado aguarda sua resposta. Comente abaixo para reativar o atendimento.",
+  "comment.placeholder": "Escreva um comentário…",
+  "comment.submit": "Comentar",
+  "comment.attach": "Anexar arquivos",
+  "comment.removeFile": "Remover",
+  "comment.error.tooBig": "Arquivo maior que 10 MB:",
+  "comment.error.badType": "Tipo de arquivo não permitido:",
+  "comment.error.generic": "Não foi possível enviar o comentário."
 }

@@ -72,6 +72,12 @@ class AttachmentIntegrationTest extends IntegrationTestBase {
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Disposition", Matchers.containsString("log.txt")));
 
+        // attachment is visible again on the timeline after a reload
+        mockMvc.perform(auth(get("/api/tickets/" + id + "/timeline"), client))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].attachments[0].id").value(attachmentId))
+                .andExpect(jsonPath("$.content[0].attachments[0].filename").value("log.txt"));
+
         // agente tambem tem acesso ao chamado
         mockMvc.perform(auth(get("/api/attachments/" + attachmentId), agent))
                 .andExpect(status().isOk());

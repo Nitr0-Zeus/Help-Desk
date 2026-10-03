@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class TimelineService {
@@ -66,21 +68,34 @@ public class TimelineService {
         tickets.save(ticket);
         recomputeBreach(ticket, now);
 
-        var response = toResponse(entry);
+        var response = toResponse(entry, savedAttachments.stream()
+                .map(a -> new com.helpdesk.ticket.dto.TimelineDtos.AttachmentView(
+                        a.getId(), a.getOriginalFilename(), a.getContentType(), a.getSize()))
+                .toList());
         return new com.helpdesk.ticket.dto.TimelineDtos.CommentResponse(
                 response.id(), response.type(), response.eventType(),
                 response.authorId(), response.authorName(), response.body(),
                 response.payload(), response.createdAt(),
-                savedAttachments.stream()
-                        .map(a -> new com.helpdesk.ticket.dto.TimelineDtos.AttachmentView(
-                                a.getId(), a.getOriginalFilename(), a.getContentType(), a.getSize()))
-                        .toList());
+                response.attachments());
     }
 
     @Transactional(readOnly = true)
     public TimelinePage timeline(Long ticketId, Pageable pageable) {
         Page<TimelineEntry> page = timeline.findByTicketId(ticketId, pageable);
-        return new TimelinePage(page.map(this::toResponse).getContent(),
+        var entryIds = page.getContent().stream().map(TimelineEntry::getId).toList();
+        var attachments = attachmentService.findByTimelineEntryIds(entryIds);
+        var byEntry = new java.util.HashMap<Long, java.util.List<com.helpdesk.ticket.dto.TimelineDtos.AttachmentView>>();
+        attachments.stream()
+                .map(a -> Map.entry(a.getTimelineEntry().getId(),
+                        new com.helpdesk.ticket.dto.TimelineDtos.AttachmentView(
+                                a.getId(), a.getOriginalFilename(), a.getContentType(), a.getSize())))
+                .forEach(e -> byEntry.computeIfAbsent(e.getKey(), k -> new java.util.ArrayList<>())
+                        .add(e.getValue()));
+        var content = page.getContent().stream()
+                .map(entry -> toResponse(entry,
+                        byEntry.getOrDefault(entry.getId(), List.of())))
+                .toList();
+        return new TimelinePage(content,
                 page.getNumber(), page.getSize(), page.getTotalElements(), page.getTotalPages());
     }
 
@@ -128,11 +143,13 @@ public class TimelineService {
                 "{\"from\":\"" + from + "\",\"to\":\"" + ticket.getStatus() + "\"}", now));
     }
 
-    private TimelineEntryResponse toResponse(TimelineEntry entry) {
+    private TimelineEntryResponse toResponse(TimelineEntry entry,
+                                              java.util.List<com.helpdesk.ticket.dto.TimelineDtos.AttachmentView> attachments) {
         return new TimelineEntryResponse(
                 entry.getId(), entry.getType(), entry.getEventType(),
                 entry.getAuthor() == null ? null : entry.getAuthor().getId(),
                 entry.getAuthor() == null ? null : entry.getAuthor().getName(),
-                entry.getBody(), entry.getPayload(), entry.getCreatedAt());
+                entry.getBody(), entry.getPayload(), entry.getCreatedAt(),
+                attachments);
     }
 }

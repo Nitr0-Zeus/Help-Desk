@@ -103,5 +103,12 @@
   "event.SLA_RESUMED": "SLA resumed",
   "event.SLA_BREACHED": "SLA breached",
   "event.ASSIGNED": "Assignment",
-  "detail.waitingBanner": "This ticket is waiting for your reply. Comment below to resume support."
+  "detail.waitingBanner": "This ticket is waiting for your reply. Comment below to resume support.",
+  "comment.placeholder": "Write a comment…",
+  "comment.submit": "Comment",
+  "comment.attach": "Attach files",
+  "comment.removeFile": "Remove",
+  "comment.error.tooBig": "File larger than 10 MB:",
+  "comment.error.badType": "File type not allowed:",
+  "comment.error.generic": "Could not send the comment."
 }

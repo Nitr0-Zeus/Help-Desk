@@ -60,13 +60,8 @@ function endSession(): void {
   window.dispatchEvent(new Event('auth:logout'))
 }
 
-export async function apiFetch<T>(
-  path: string,
-  init: RequestInit = {},
-  retried = false,
-): Promise<T> {
+async function authenticatedFetch(path: string, init: RequestInit, retried = false): Promise<Response> {
   const headers = new Headers(init.headers)
-  headers.set('Accept', 'application/json')
   const access = tokenStorage.getAccess()
   if (access) headers.set('Authorization', `Bearer ${access}`)
   const isFormData = init.body instanceof FormData
@@ -79,11 +74,33 @@ export async function apiFetch<T>(
   if (response.status === 401 && !retried && !path.startsWith('/auth/')) {
     const renewed = await sharedRefresh()
     if (renewed) {
-      return apiFetch<T>(path, init, true)
+      return authenticatedFetch(path, init, true)
     }
     endSession()
     throw new ApiError(401, { status: 401, detail: 'Session expired' })
   }
+  return response
+}
+
+/** Binary download with the same auth/refresh rules; never a public URL. */
+export async function apiBlob(path: string): Promise<Blob> {
+  const response = await authenticatedFetch(path, {})
+  if (!response.ok) {
+    throw new ApiError(response.status, { status: response.status })
+  }
+  return response.blob()
+}
+
+export async function apiFetch<T>(
+  path: string,
+  init: RequestInit = {},
+  retried = false,
+): Promise<T> {
+  const requestInit: RequestInit = {
+    ...init,
+    headers: { Accept: 'application/json', ...init.headers },
+  }
+  const response = await authenticatedFetch(path, requestInit, retried)
 
   if (!response.ok) {
     let problem: ProblemDetail

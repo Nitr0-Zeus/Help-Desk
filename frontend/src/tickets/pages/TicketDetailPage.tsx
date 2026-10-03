@@ -3,6 +3,7 @@ import { useAuth } from '../../auth/auth-provider'
 import { useI18n } from '../../i18n/I18nProvider'
 import { formatDate } from '../../lib/format'
 import { PriorityBadge, SlaChip, StatusBadge } from '../components/Badges'
+import { CommentForm } from '../components/CommentForm'
 import { TicketActions } from '../components/TicketActions'
 import { Timeline } from '../components/Timeline'
 import { useTicket, useTimeline } from '../hooks/useTicket'
@@ -82,6 +83,7 @@ export default function TicketDetailPage() {
             <h3 id="timeline-heading" className="text-sm font-medium text-[var(--text-muted)]">
               {t('timeline.title')}
             </h3>
+            <CommentForm ticketId={ticketId} />
             {timeline.isPending && (
               <div className="h-24 animate-pulse rounded-lg bg-[var(--hover)]" />
             )}
