@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: helpdesk-api
+  profiles:
+    default: dev
+  datasource:
+    url: ${HELPDESK_DB_URL:jdbc:sqlite:helpdesk.db}
+    hikari:
+      maximum-pool-size: 1
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+  sql:
+    init:
+      mode: always
+      continue-on-error: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 60MB
+server:
+  port: 8080
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+helpdesk:
+  jwt:
+    secret: ${HELPDESK_JWT_SECRET:dev-only-secret-change-me-0123456789abcdef}
+    access-ttl: 15m
+    refresh-ttl: 7d
+  upload-dir: ${HELPDESK_UPLOAD_DIR:./uploads}
+  sla:
+    zone: America/Sao_Paulo
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
