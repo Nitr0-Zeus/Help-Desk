@@ -7,8 +7,7 @@ import com.helpdesk.ticket.dto.TicketDtos.TicketPage;
 import com.helpdesk.ticket.dto.TicketDtos.TicketResponse;
 import com.helpdesk.ticket.dto.TicketDtos.TransitionRequest;
 import com.helpdesk.ticket.dto.TicketDtos.UpdateTicketRequest;
-import com.helpdesk.ticket.dto.TimelineDtos.CommentRequest;
-import com.helpdesk.ticket.dto.TimelineDtos.TimelineEntryResponse;
+import com.helpdesk.ticket.dto.TimelineDtos.CommentResponse;
 import com.helpdesk.ticket.dto.TimelineDtos.TimelinePage;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -99,13 +99,15 @@ public class TicketController {
                 Sort.by(Sort.Direction.DESC, "createdAt", "id")));
     }
 
-    @PostMapping("/{id}/comments")
-    public ResponseEntity<TimelineEntryResponse> comment(@AuthenticationPrincipal UserContext current,
-                                                         @PathVariable Long id,
-                                                         @Valid @RequestBody CommentRequest request) {
+    @PostMapping(value = "/{id}/comments", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CommentResponse> comment(@AuthenticationPrincipal UserContext current,
+                                                   @PathVariable Long id,
+                                                   @RequestParam String body,
+                                                   @RequestPart(value = "files", required = false)
+                                                   org.springframework.web.multipart.MultipartFile[] files) {
         ticketService.loadOwned(id, current);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(timelineService.addComment(id, current, request.body().trim()));
+                .body(timelineService.addComment(id, current, body, files));
     }
 
     @PreAuthorize("hasRole('AGENTE')")

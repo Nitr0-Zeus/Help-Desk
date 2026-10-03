@@ -48,9 +48,10 @@ class TimelineIntegrationTest extends IntegrationTestBase {
     }
 
     private void comment(String token, String id, String body) throws Exception {
-        mockMvc.perform(auth(post("/api/tickets/" + id + "/comments"), token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json("{\"body\":\"" + body + "\"}")))
+        mockMvc.perform(auth(
+                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                                .multipart("/api/tickets/" + id + "/comments")
+                                .param("body", body), token))
                 .andExpect(status().isCreated());
     }
 
@@ -159,11 +160,10 @@ class TimelineIntegrationTest extends IntegrationTestBase {
 
         mockMvc.perform(auth(get("/api/tickets/" + id + "/timeline"), other))
                 .andExpect(status().isNotFound());
-        mockMvc.perform(auth(post("/api/tickets/" + id + "/comments"), other)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json("""
-                                {"body":"invasao"}
-                                """)))
+        mockMvc.perform(auth(
+                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                                .multipart("/api/tickets/" + id + "/comments")
+                                .param("body", "invasao"), other))
                 .andExpect(status().isNotFound());
     }
 
@@ -171,11 +171,10 @@ class TimelineIntegrationTest extends IntegrationTestBase {
     void blankCommentIs422() throws Exception {
         String client = register("Ana", "tl8@dev.io", "Senha@123", "CLIENTE", null);
         String id = newTicket(client);
-        mockMvc.perform(auth(post("/api/tickets/" + id + "/comments"), client)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json("""
-                                {"body":"  "}
-                                """)))
+        mockMvc.perform(auth(
+                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                                .multipart("/api/tickets/" + id + "/comments")
+                                .param("body", "   "), client))
                 .andExpect(status().isUnprocessableEntity());
     }
 }

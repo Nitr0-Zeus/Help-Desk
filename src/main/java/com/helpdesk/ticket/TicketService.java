@@ -35,15 +35,18 @@ public class TicketService {
     private final SlaCalculator slaCalculator;
     private final TimeProvider time;
     private final TimelineService timelineService;
+    private final com.helpdesk.attachment.AttachmentService attachmentService;
 
     public TicketService(TicketRepository tickets, UserService userService,
                          SlaCalculator slaCalculator, TimeProvider time,
-                         TimelineService timelineService) {
+                         TimelineService timelineService,
+                         com.helpdesk.attachment.AttachmentService attachmentService) {
         this.tickets = tickets;
         this.userService = userService;
         this.slaCalculator = slaCalculator;
         this.time = time;
         this.timelineService = timelineService;
+        this.attachmentService = attachmentService;
     }
 
     @Transactional
@@ -115,6 +118,7 @@ public class TicketService {
         if (ticket.getStatus() != TicketStatus.ABERTO) {
             throw new ConflictException("Tickets can only be deleted while ABERTO");
         }
+        attachmentService.deleteFilesOfTicket(ticket);
         tickets.delete(ticket);
     }
 

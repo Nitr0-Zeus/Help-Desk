@@ -80,6 +80,13 @@ public class GlobalExceptionHandler {
                 "File exceeds the 10 MB limit", req);
     }
 
+    @ExceptionHandler(org.springframework.web.HttpMediaTypeNotSupportedException.class)
+    public ProblemDetail unsupportedMedia(org.springframework.web.HttpMediaTypeNotSupportedException ex,
+                                           HttpServletRequest req) {
+        return problem(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Unsupported media type",
+                "Content type not supported for this endpoint", req);
+    }
+
     @ExceptionHandler(NoResourceFoundException.class)
     public ProblemDetail noResource(NoResourceFoundException ex, HttpServletRequest req) {
         return problem(HttpStatus.NOT_FOUND, "Not found", "Resource not found", req);
@@ -94,8 +101,11 @@ public class GlobalExceptionHandler {
         return problem(HttpStatus.FORBIDDEN, "Forbidden", "Insufficient permissions", req);
     }
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(Exception.class)
     public ProblemDetail generic(Exception ex, HttpServletRequest req) {
+        log.error("Unhandled exception on {} {}", req.getMethod(), req.getRequestURI(), ex);
         return problem(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error",
                 "Unexpected error", req);
     }

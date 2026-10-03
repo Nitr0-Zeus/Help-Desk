@@ -25,20 +25,29 @@ public class TimelineService {
     private final SlaCalculator slaCalculator;
     private final BusinessCalendar businessCalendar;
     private final TimeProvider time;
+    private final com.helpdesk.attachment.AttachmentService attachmentService;
 
     public TimelineService(TimelineRepository timeline, TicketRepository tickets,
                            UserRepository users, SlaCalculator slaCalculator,
-                           BusinessCalendar businessCalendar, TimeProvider time) {
+                           BusinessCalendar businessCalendar, TimeProvider time,
+                           com.helpdesk.attachment.AttachmentService attachmentService) {
         this.timeline = timeline;
         this.tickets = tickets;
         this.users = users;
         this.slaCalculator = slaCalculator;
         this.businessCalendar = businessCalendar;
         this.time = time;
+        this.attachmentService = attachmentService;
     }
 
     @Transactional
-    public TimelineEntryResponse addComment(Long ticketId, UserContext actor, String body) {
+    public com.helpdesk.ticket.dto.TimelineDtos.CommentResponse addComment(Long ticketId,
+                                                                           UserContext actor,
+                                                                           String body,
+                                                                           org.springframework.web.multipart.MultipartFile[] files) {
+        if (body == null || body.isBlank()) {
+            throw new com.helpdesk.common.error.UnprocessableException("Comment body must not be blank");
+        }
         Ticket ticket = tickets.findById(ticketId)
                 .orElseThrow(() -> new NotFoundException("Ticket not found"));
         User author = users.findById(actor.id())
@@ -46,6 +55,7 @@ public class TimelineService {
         Instant now = time.now();
 
         TimelineEntry entry = timeline.save(TimelineEntry.comment(ticket, author, body.trim(), now));
+        var savedAttachments = attachmentService.attach(entry, files);
 
         if (actor.isAgent() && ticket.getFirstResponseAt() == null) {
             ticket.setFirstResponseAt(now);
@@ -55,7 +65,16 @@ public class TimelineService {
         }
         tickets.save(ticket);
         recomputeBreach(ticket, now);
-        return toResponse(entry);
+
+        var response = toResponse(entry);
+        return new com.helpdesk.ticket.dto.TimelineDtos.CommentResponse(
+                response.id(), response.type(), response.eventType(),
+                response.authorId(), response.authorName(), response.body(),
+                response.payload(), response.createdAt(),
+                savedAttachments.stream()
+                        .map(a -> new com.helpdesk.ticket.dto.TimelineDtos.AttachmentView(
+                                a.getId(), a.getOriginalFilename(), a.getContentType(), a.getSize()))
+                        .toList());
     }
 
     @Transactional(readOnly = true)

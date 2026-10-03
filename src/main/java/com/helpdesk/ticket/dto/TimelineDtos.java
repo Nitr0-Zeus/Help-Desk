@@ -24,4 +24,13 @@ public final class TimelineDtos {
     public record TimelinePage(List<TimelineEntryResponse> content, int page, int size,
                                long totalElements, int totalPages) {
     }
+
+    public record AttachmentView(Long id, String filename, String contentType, long size) {
+    }
+
+    public record CommentResponse(Long id, TimelineType type, EventType eventType,
+                                  Long authorId, String authorName, String body,
+                                  String payload, Instant createdAt,
+                                  List<AttachmentView> attachments) {
+    }
 }
