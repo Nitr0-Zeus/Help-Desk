@@ -49,11 +49,28 @@ public abstract class IntegrationTestBase {
 
     @Autowired protected MockMvc mockMvc;
     @Autowired protected ObjectMapper mapper;
+    @Autowired protected org.springframework.jdbc.core.JdbcTemplate jdbc;
     @MockBean protected TimeProvider time;
 
     @BeforeEach
     void defaultClock() {
         when(time.now()).thenAnswer(i -> Instant.now());
+        cleanDatabase();
+    }
+
+    /**
+     * All tests share one SQLite file; wipe business data before each test so
+     * counts and visibility assertions stay deterministic.
+     */
+    private void cleanDatabase() {
+        jdbc.execute("DELETE FROM attachments");
+        jdbc.execute("DELETE FROM timeline_entries");
+        jdbc.execute("DELETE FROM tickets");
+        jdbc.execute("DELETE FROM refresh_tokens");
+        jdbc.execute("DELETE FROM invite_codes");
+        jdbc.execute("DELETE FROM users");
+        jdbc.execute("INSERT INTO invite_codes (code, role, expires_at) VALUES "
+                + "('AGENTE-2026', 'AGENTE', '2030-12-31 23:59:59.000')");
     }
 
     protected String register(String name, String email, String password, String role, String inviteCode) throws Exception {

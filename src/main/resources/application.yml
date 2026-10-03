@@ -9,6 +9,7 @@ spring:
       maximum-pool-size: 1
       data-source-properties:
         date_class: TEXT
+        foreign_keys: 'ON'
   jpa:
     hibernate:
       ddl-auto: none

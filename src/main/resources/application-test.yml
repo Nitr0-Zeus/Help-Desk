@@ -3,3 +3,4 @@ spring:
     url: jdbc:sqlite:target/helpdesk-test.db
 helpdesk:
   upload-dir: ./target/test-uploads
+
