@@ -34,13 +34,16 @@ public class TicketService {
     private final UserService userService;
     private final SlaCalculator slaCalculator;
     private final TimeProvider time;
+    private final TimelineService timelineService;
 
     public TicketService(TicketRepository tickets, UserService userService,
-                         SlaCalculator slaCalculator, TimeProvider time) {
+                         SlaCalculator slaCalculator, TimeProvider time,
+                         TimelineService timelineService) {
         this.tickets = tickets;
         this.userService = userService;
         this.slaCalculator = slaCalculator;
         this.time = time;
+        this.timelineService = timelineService;
     }
 
     @Transactional
@@ -66,9 +69,11 @@ public class TicketService {
         return toResponse(tickets.save(ticket));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public TicketResponse get(Long id, UserContext actor) {
-        return toResponse(loadOwned(id, actor));
+        Ticket ticket = loadOwned(id, actor);
+        timelineService.recomputeBreach(ticket, time.now());
+        return toResponse(ticket);
     }
 
     @Transactional(readOnly = true)
@@ -130,20 +135,31 @@ public class TicketService {
         }
         var now = time.now();
         TicketStatus from = ticket.getStatus();
+        boolean paused = false;
         switch (target) {
             case EM_ATENDIMENTO -> {
                 if (from == TicketStatus.ABERTO && actor.isAgent()) {
                     ticket.setAssignedTo(userService.loadRequired(actor.id()));
                 }
             }
-            case AGUARDANDO_CLIENTE -> ticket.setWaitingSince(now);
+            case AGUARDANDO_CLIENTE -> {
+                ticket.setWaitingSince(now);
+                paused = true;
+            }
             case RESOLVIDO -> ticket.setResolvedAt(now);
             case FECHADO -> ticket.setClosedAt(now);
             default -> { }
         }
         ticket.setStatus(target);
         ticket.touch(now);
-        return toResponse(tickets.save(ticket));
+        tickets.save(ticket);
+        if (paused) {
+            timelineService.appendEvent(ticket, EventType.SLA_PAUSED, actor, "{}", now);
+        }
+        timelineService.appendEvent(ticket, EventType.STATUS_CHANGED, actor,
+                "{\"from\":\"" + from + "\",\"to\":\"" + target + "\"}", now);
+        timelineService.recomputeBreach(ticket, now);
+        return toResponse(ticket);
     }
 
     @Transactional

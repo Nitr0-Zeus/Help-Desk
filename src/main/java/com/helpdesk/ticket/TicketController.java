@@ -7,6 +7,9 @@ import com.helpdesk.ticket.dto.TicketDtos.TicketPage;
 import com.helpdesk.ticket.dto.TicketDtos.TicketResponse;
 import com.helpdesk.ticket.dto.TicketDtos.TransitionRequest;
 import com.helpdesk.ticket.dto.TicketDtos.UpdateTicketRequest;
+import com.helpdesk.ticket.dto.TimelineDtos.CommentRequest;
+import com.helpdesk.ticket.dto.TimelineDtos.TimelineEntryResponse;
+import com.helpdesk.ticket.dto.TimelineDtos.TimelinePage;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,9 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class TicketController {
 
     private final TicketService ticketService;
+    private final TimelineService timelineService;
 
-    public TicketController(TicketService ticketService) {
+    public TicketController(TicketService ticketService, TimelineService timelineService) {
         this.ticketService = ticketService;
+        this.timelineService = timelineService;
     }
 
     @PostMapping
@@ -82,6 +87,25 @@ public class TicketController {
                                      @PathVariable Long id,
                                      @Valid @RequestBody TransitionRequest request) {
         return ticketService.transition(id, request, current);
+    }
+
+    @GetMapping("/{id}/timeline")
+    public TimelinePage timeline(@AuthenticationPrincipal UserContext current,
+                                 @PathVariable Long id,
+                                 @RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "50") int size) {
+        ticketService.loadOwned(id, current);
+        return timelineService.timeline(id, PageRequest.of(page, Math.min(size, 100),
+                Sort.by(Sort.Direction.DESC, "createdAt", "id")));
+    }
+
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<TimelineEntryResponse> comment(@AuthenticationPrincipal UserContext current,
+                                                         @PathVariable Long id,
+                                                         @Valid @RequestBody CommentRequest request) {
+        ticketService.loadOwned(id, current);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(timelineService.addComment(id, current, request.body().trim()));
     }
 
     @PreAuthorize("hasRole('AGENTE')")
