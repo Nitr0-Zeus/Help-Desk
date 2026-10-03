@@ -4,7 +4,7 @@ import { AuthProvider } from '../auth/auth-provider'
 import { I18nProvider } from '../i18n/I18nProvider'
 import { ThemeProvider } from '../theme/ThemeProvider'
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
