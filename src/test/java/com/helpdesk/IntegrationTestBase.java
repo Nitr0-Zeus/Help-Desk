@@ -88,8 +88,15 @@ public abstract class IntegrationTestBase {
         return json.get("accessToken").asText();
     }
 
-    protected String json(Object value) throws Exception {
-        return mapper.writeValueAsString(value);
+    protected String json(Object value) {
+        if (value instanceof String raw) {
+            return raw;
+        }
+        try {
+            return mapper.writeValueAsString(value);
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     protected MockHttpServletRequestBuilder auth(MockHttpServletRequestBuilder builder, String token) {

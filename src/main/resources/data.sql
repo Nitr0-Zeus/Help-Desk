@@ -5,4 +5,4 @@ INSERT OR IGNORE INTO sla_policies (priority, first_response_hours, resolution_h
     ('CRITICA', 1, 8, 1);
 
 INSERT OR IGNORE INTO invite_codes (code, role, expires_at) VALUES
-    ('AGENTE-2026', 'AGENTE', '2030-12-31 23:59:59');
+    ('AGENTE-2026', 'AGENTE', '2030-12-31 23:59:59.000');
