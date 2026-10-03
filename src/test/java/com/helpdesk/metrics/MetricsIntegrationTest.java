@@ -143,6 +143,29 @@ class MetricsIntegrationTest extends IntegrationTestBase {
     }
 
     @Test
+    void resolvedThenClosedStillCountsAsResolved() throws Exception {
+        String client = register("Ana", "mx6@dev.io", "Senha@123", "CLIENTE", null);
+        String agent = register("Agente", "max6@dev.io", "Senha@123", "AGENTE", "AGENTE-2026");
+
+        String id = createTicket(client, "BAIXA", monday9);
+        transition(agent, id, "EM_ATENDIMENTO", monday9);
+        comment(agent, id, monday9.plusSeconds(3600));
+        transition(agent, id, "RESOLVIDO", monday9.plusSeconds(2 * 3600L));
+        transition(agent, id, "FECHADO", monday9.plusSeconds(3 * 3600L));
+
+        mockMvc.perform(auth(get("/api/metrics"), client))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.byStatus.FECHADO").value(1))
+                .andExpect(jsonPath("$.byStatus.RESOLVIDO").value(0))
+                .andExpect(jsonPath("$.slaCompliancePercent").value(100.0))
+                .andExpect(jsonPath("$.avgResolutionHours").value(2.0));
+
+        mockMvc.perform(auth(get("/api/metrics/agents"), client))
+                .andExpect(jsonPath("$[0].resolved").value(1))
+                .andExpect(jsonPath("$[0].slaCompliancePercent").value(100.0));
+    }
+
+    @Test
     void metricsRequireAuthentication() throws Exception {
         mockMvc.perform(get("/api/metrics"))
                 .andExpect(status().isUnauthorized());

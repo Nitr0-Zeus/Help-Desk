@@ -87,6 +87,20 @@ public class GlobalExceptionHandler {
                 "Content type not supported for this endpoint", req);
     }
 
+    @ExceptionHandler({org.springframework.web.multipart.support.MissingServletRequestPartException.class,
+            org.springframework.web.multipart.MultipartException.class})
+    public ProblemDetail badMultipart(Exception ex, HttpServletRequest req) {
+        return problem(HttpStatus.BAD_REQUEST, "Malformed request",
+                "Missing or malformed multipart field: " + ex.getMessage(), req);
+    }
+
+    @ExceptionHandler(org.springframework.web.bind.MissingServletRequestParameterException.class)
+    public ProblemDetail missingParam(org.springframework.web.bind.MissingServletRequestParameterException ex,
+                                      HttpServletRequest req) {
+        return problem(HttpStatus.BAD_REQUEST, "Malformed request",
+                "Missing required parameter: " + ex.getParameterName(), req);
+    }
+
     @ExceptionHandler(NoResourceFoundException.class)
     public ProblemDetail noResource(NoResourceFoundException ex, HttpServletRequest req) {
         return problem(HttpStatus.NOT_FOUND, "Not found", "Resource not found", req);

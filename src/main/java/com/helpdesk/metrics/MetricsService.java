@@ -64,7 +64,7 @@ public class MetricsService {
                         && t.getAssignedTo().getId().equals(agent.getId()))
                 .toList();
         long resolved = assigned.stream()
-                .filter(t -> t.getStatus() == TicketStatus.RESOLVIDO).count();
+                .filter(t -> t.getResolvedAt() != null).count();
         return new AgentMetrics(agent.getId(), agent.getName(), assigned.size(), resolved,
                 compliance(assigned),
                 avgHours(assigned, Ticket::getCreatedAt, Ticket::getFirstResponseAt),
@@ -72,9 +72,9 @@ public class MetricsService {
     }
 
     private Double compliance(List<Ticket> tickets) {
+        // resolvedAt, not status: a ticket resolved then closed still counts
         List<Ticket> resolved = tickets.stream()
-                .filter(t -> t.getStatus() == TicketStatus.RESOLVIDO
-                        && t.getResolvedAt() != null && t.getDueAt() != null)
+                .filter(t -> t.getResolvedAt() != null && t.getDueAt() != null)
                 .toList();
         if (resolved.isEmpty()) {
             return null;

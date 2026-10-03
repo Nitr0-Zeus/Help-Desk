@@ -143,4 +143,13 @@ class AttachmentIntegrationTest extends IntegrationTestBase {
                                 """)))
                 .andExpect(status().isUnsupportedMediaType());
     }
+
+    @Test
+    void multipartWithoutBodyFieldIs400() throws Exception {
+        String client = register("Ana", "an9@dev.io", "Senha@123", "CLIENTE", null);
+        String id = newTicket(client);
+        mockMvc.perform(auth(multipart("/api/tickets/" + id + "/comments"), client))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title").value("Malformed request"));
+    }
 }
