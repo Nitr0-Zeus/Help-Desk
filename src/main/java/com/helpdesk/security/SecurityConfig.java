@@ -38,9 +38,14 @@ public class SecurityConfig {
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                // every other API endpoint demands a token (checked first on purpose)
+                .requestMatchers("/api/**").authenticated()
                 .requestMatchers(HttpMethod.GET,
                         "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
                         "/actuator/health").permitAll()
+                // SPA shell, client routes and static assets are public;
+                // the API itself stays protected by the rule above
+                .requestMatchers(HttpMethod.GET, "/**").permitAll()
                 .anyRequest().authenticated())
             .exceptionHandling(e -> e
                 .authenticationEntryPoint(entryPoint)
