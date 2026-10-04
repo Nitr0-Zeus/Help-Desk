@@ -147,5 +147,6 @@
   "profile.error.emailInUse": "This email is already in use.",
   "profile.error.wrongCurrent": "Wrong current password.",
   "profile.error.invalidNew": "Invalid new password (8 characters minimum).",
-  "profile.error.generic": "Something went wrong. Try again."
+  "profile.error.generic": "Something went wrong. Try again.",
+  "action.logout": "Log out"
 }

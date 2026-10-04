@@ -147,5 +147,6 @@
   "profile.error.emailInUse": "Este e-mail já está em uso.",
   "profile.error.wrongCurrent": "Senha atual incorreta.",
   "profile.error.invalidNew": "Nova senha inválida (mínimo 8 caracteres).",
-  "profile.error.generic": "Algo deu errado. Tente novamente."
+  "profile.error.generic": "Algo deu errado. Tente novamente.",
+  "action.logout": "Sair"
 }

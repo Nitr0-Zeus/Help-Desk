@@ -82,7 +82,7 @@ export function Topbar({ onOpenMenu, menuOpen }: TopbarProps) {
             <button
               type="button"
               className={controlClass}
-              aria-label="Logout"
+              aria-label={t('action.logout')}
               onClick={() => {
                 logout()
                 navigate('/login')

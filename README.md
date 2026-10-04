@@ -19,15 +19,17 @@ documentado, pensado para portfólio.
 ## Como rodar
 
 ```bash
+cd frontend && npm install && npm run build   # gera a SPA em src/main/resources/static/
 mvn spring-boot:run
 ```
 
 Pronto — a aplicação cria `helpdesk.db` no diretório do projeto, aplica o schema
-e o seed automaticamente.
+e o seed automaticamente, e serve a **interface web** (frontend React) na mesma porta.
 
+- **Interface**: http://localhost:8080 (dev com hot reload: `cd frontend && npm run dev` → http://localhost:5173)
 - Swagger: http://localhost:8080/swagger-ui.html
 - Health: http://localhost:8080/actuator/health
-- Testes: `mvn verify`
+- Testes backend: `mvn verify` · Testes frontend: `cd frontend && npm test`
 
 ### Usuários demo (perfil `dev`, o padrão)
 
