@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import { useAuth } from '../../auth/auth-provider'
 import { useI18n } from '../../i18n/I18nProvider'
 import { formatDate } from '../../lib/format'
+import { ErrorState } from '../../components/ui/ErrorState'
 import { PriorityBadge, SlaChip, StatusBadge } from '../components/Badges'
 import { CommentForm } from '../components/CommentForm'
 import { TicketActions } from '../components/TicketActions'
@@ -28,18 +29,12 @@ export default function TicketDetailPage() {
   if (ticket.isError) {
     const notFound = (ticket.error as { status?: number }).status === 404
     return (
-      <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-10 text-center">
-        <h2 className="text-base font-semibold">
-          {notFound ? t('detail.notFound') : t('tickets.error')}
-        </h2>
-        <button
-          type="button"
-          onClick={() => ticket.refetch()}
-          className="mt-4 rounded-md border border-[var(--border)] px-3.5 py-1.5 text-sm font-medium transition-colors duration-150 hover:bg-[var(--hover)]"
-        >
-          {notFound ? t('common.backToTickets') : t('tickets.retry')}
-        </button>
-      </div>
+      <ErrorState
+        tone="neutral"
+        message={notFound ? t('detail.notFound') : t('tickets.error')}
+        actionLabel={notFound ? t('common.backToTickets') : t('tickets.retry')}
+        onAction={() => ticket.refetch()}
+      />
     )
   }
 

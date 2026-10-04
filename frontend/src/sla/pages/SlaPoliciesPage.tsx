@@ -1,4 +1,5 @@
 import { useI18n } from '../../i18n/I18nProvider'
+import { ErrorState } from '../../components/ui/ErrorState'
 import { PriorityBadge } from '../../tickets/components/Badges'
 import { useSlaPolicies } from '../hooks/useSlaPolicies'
 
@@ -14,16 +15,11 @@ export default function SlaPoliciesPage() {
 
   if (policies.isError) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center dark:border-red-900 dark:bg-red-950">
-        <p className="text-sm font-medium text-red-700 dark:text-red-300">{t('tickets.error')}</p>
-        <button
-          type="button"
-          onClick={() => policies.refetch()}
-          className="mt-3 rounded-md border border-red-300 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-100 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-900"
-        >
-          {t('tickets.retry')}
-        </button>
-      </div>
+      <ErrorState
+        message={t('tickets.error')}
+        actionLabel={t('tickets.retry')}
+        onAction={() => policies.refetch()}
+      />
     )
   }
 

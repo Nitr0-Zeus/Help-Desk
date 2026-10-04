@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useI18n } from '../i18n/I18nProvider'
+import { buttonClass } from '../components/ui/button-styles'
 
 export default function NotFoundPage() {
   const { t } = useI18n()
@@ -9,7 +10,7 @@ export default function NotFoundPage() {
       <h1 className="text-xl font-semibold">{t('common.notFound')}</h1>
       <Link
         to="/tickets"
-        className="mt-2 rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white transition-opacity duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+        className={buttonClass('primary', 'md', 'mt-2')}
       >
         {t('common.backToTickets')}
       </Link>

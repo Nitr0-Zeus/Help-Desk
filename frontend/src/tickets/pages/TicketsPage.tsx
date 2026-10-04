@@ -1,6 +1,9 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import { useI18n } from '../../i18n/I18nProvider'
 import { IconPlus } from '../../components/ui/icons'
+import { Button } from '../../components/ui/Button'
+import { buttonClass } from '../../components/ui/button-styles'
+import { ErrorState } from '../../components/ui/ErrorState'
 import { FiltersBar } from '../components/FiltersBar'
 import { TicketTable } from '../components/TicketTable'
 import { useTickets } from '../hooks/useTickets'
@@ -38,10 +41,7 @@ export default function TicketsPage() {
   }
 
   const newTicketButton = (
-    <Link
-      to="/tickets/new"
-      className="inline-flex h-9 items-center gap-1.5 rounded-md bg-[var(--accent)] px-3.5 text-sm font-medium text-white transition-opacity duration-150 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-    >
+    <Link to="/tickets/new" className={buttonClass('primary', 'md', 'gap-1.5')}>
       <IconPlus width={16} height={16} />
       {t('action.newTicket')}
     </Link>
@@ -75,18 +75,11 @@ export default function TicketsPage() {
       )}
 
       {isError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center dark:border-red-900 dark:bg-red-950">
-          <p className="text-sm font-medium text-red-700 dark:text-red-300">
-            {t('tickets.error')}
-          </p>
-          <button
-            type="button"
-            onClick={() => refetch()}
-            className="mt-3 rounded-md border border-red-300 px-3 py-1.5 text-sm font-medium text-red-700 transition-colors duration-150 hover:bg-red-100 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-900"
-          >
-            {t('tickets.retry')}
-          </button>
-        </div>
+        <ErrorState
+          message={t('tickets.error')}
+          actionLabel={t('tickets.retry')}
+          onAction={() => refetch()}
+        />
       )}
 
       {data && data.content.length > 0 && (
@@ -97,25 +90,25 @@ export default function TicketsPage() {
               {data.totalElements} {t('tickets.total')}
             </span>
             <div className="flex items-center gap-2">
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="sm"
                 disabled={data.page <= 0}
                 onClick={() => update({ page: filters.page - 1 })}
-                className="h-8 rounded-md border border-[var(--border)] px-3 font-medium transition-colors duration-150 hover:bg-[var(--hover)] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {t('tickets.page.prev')}
-              </button>
+              </Button>
               <span className="tabular-nums">
                 {data.page + 1} / {Math.max(data.totalPages, 1)}
               </span>
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="sm"
                 disabled={data.page + 1 >= data.totalPages}
                 onClick={() => update({ page: filters.page + 1 })}
-                className="h-8 rounded-md border border-[var(--border)] px-3 font-medium transition-colors duration-150 hover:bg-[var(--hover)] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {t('tickets.page.next')}
-              </button>
+              </Button>
             </div>
           </div>
         </>
@@ -131,13 +124,9 @@ export default function TicketsPage() {
           </p>
           <div className="mt-4">
             {hasFilters ? (
-              <button
-                type="button"
-                onClick={() => setSearchParams({}, { replace: true })}
-                className="rounded-md border border-[var(--border)] px-3.5 py-1.5 text-sm font-medium transition-colors duration-150 hover:bg-[var(--hover)]"
-              >
+              <Button variant="secondary" size="sm" onClick={() => setSearchParams({}, { replace: true })}>
                 {t('tickets.clearFilters')}
-              </button>
+              </Button>
             ) : (
               newTicketButton
             )}

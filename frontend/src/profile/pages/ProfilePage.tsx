@@ -3,17 +3,10 @@ import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth/auth-provider'
 import { Field } from '../../components/ui/Field'
+import { Button } from '../../components/ui/Button'
 import { useI18n } from '../../i18n/I18nProvider'
 import { useChangePassword, useDeactivate, useProfile, useUpdateProfile } from '../hooks/useProfile'
 import { mapProfileError } from '../profile-errors'
-
-const primaryButton =
-  'h-9 rounded-md bg-[var(--accent)] px-4 text-sm font-medium text-white ' +
-  'transition-opacity duration-150 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60'
-
-const outlineButton =
-  'h-9 rounded-md border border-[var(--border)] px-4 text-sm font-medium ' +
-  'transition-colors duration-150 hover:bg-[var(--hover)] disabled:cursor-not-allowed disabled:opacity-60'
 
 function ErrorBanner({ message }: { message: string | null }) {
   if (!message) return null
@@ -124,21 +117,20 @@ export default function ProfilePage() {
             <p className="text-sm text-emerald-700 dark:text-emerald-400">{t('profile.saved')}</p>
           )}
           <div className="flex gap-2.5">
-            <button type="submit" disabled={update.isPending} className={primaryButton}>
+            <Button type="submit" variant="primary" disabled={update.isPending}>
               {update.isPending ? '…' : t('profile.save')}
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              variant="secondary"
               onClick={() => {
                 setName('')
                 setEmail('')
                 setProfileError(null)
                 setProfileOk(false)
               }}
-              className={outlineButton}
             >
               {t('profile.reset')}
-            </button>
+            </Button>
           </div>
         </form>
       </section>
@@ -167,13 +159,13 @@ export default function ProfilePage() {
           {passwordOk && (
             <p className="text-sm text-emerald-700 dark:text-emerald-400">{t('profile.passwordChanged')}</p>
           )}
-          <button
+          <Button
             type="submit"
+            variant="primary"
             disabled={changePassword.isPending || !current || !next}
-            className={primaryButton}
           >
             {changePassword.isPending ? '…' : t('profile.changePassword')}
-          </button>
+          </Button>
         </form>
       </section>
 
@@ -184,26 +176,21 @@ export default function ProfilePage() {
         <p className="mb-3 text-sm text-[var(--text-muted)]">{t('profile.deactivateHint')}</p>
         {confirming ? (
           <div className="flex gap-2.5">
-            <button
-              type="button"
+            <Button
+              variant="dangerSolid"
               onClick={confirmDeactivate}
               disabled={deactivate.isPending}
-              className="h-9 rounded-md bg-red-600 px-4 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               {deactivate.isPending ? '…' : t('profile.confirmDeactivate')}
-            </button>
-            <button type="button" onClick={() => setConfirming(false)} className={outlineButton}>
+            </Button>
+            <Button variant="secondary" onClick={() => setConfirming(false)}>
               {t('newTicket.cancel')}
-            </button>
+            </Button>
           </div>
         ) : (
-          <button
-            type="button"
-            onClick={() => setConfirming(true)}
-            className="h-9 rounded-md border border-red-300 px-4 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950"
-          >
+          <Button variant="danger" onClick={() => setConfirming(true)}>
             {t('profile.deactivate')}
-          </button>
+          </Button>
         )}
       </section>
     </div>

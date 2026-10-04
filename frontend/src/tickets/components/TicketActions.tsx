@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth/auth-provider'
 import { useI18n } from '../../i18n/I18nProvider'
+import { Button } from '../../components/ui/Button'
 import { useAssign, useDeleteTicket, useTransition } from '../hooks/useTicket'
 import { availableTransitions, canAssign, canDelete } from './ticket-transitions'
 import type { Ticket, TicketStatus } from '../types'
@@ -13,24 +14,6 @@ const TRANSITION_LABEL: Record<TicketStatus, string> = {
   RESOLVIDO: 'transition.resolve',
   FECHADO: 'transition.close',
 }
-
-const outlineButton =
-  'h-9 rounded-md border border-[var(--border)] px-3.5 text-sm font-medium ' +
-  'transition-colors duration-150 hover:bg-[var(--hover)] ' +
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ' +
-  'disabled:cursor-not-allowed disabled:opacity-60'
-
-const resumeButton =
-  'h-9 rounded-md border border-transparent bg-[var(--accent)] px-3.5 text-sm font-medium ' +
-  'text-white transition-opacity duration-150 hover:opacity-90 ' +
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ' +
-  'disabled:cursor-not-allowed disabled:opacity-60'
-
-const dangerButton =
-  'h-9 rounded-md border border-red-300 px-3.5 text-sm font-medium text-red-600 ' +
-  'transition-colors duration-150 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950 ' +
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 ' +
-  'disabled:cursor-not-allowed disabled:opacity-60'
 
 export function TicketActions({ ticket }: { ticket: Ticket }) {
   const { t } = useI18n()
@@ -54,59 +37,42 @@ export function TicketActions({ ticket }: { ticket: Ticket }) {
     <div className="space-y-2.5">
       <div className="flex flex-wrap gap-2">
         {transitions.map((target, index) => (
-          <button
+          <Button
             key={target}
-            type="button"
+            variant={index === 0 ? 'primary' : 'secondary'}
             disabled={busy}
             onClick={() => transition.mutate(target)}
-            className={index === 0 ? resumeButton : outlineButton}
           >
             {t(TRANSITION_LABEL[target])}
-          </button>
+          </Button>
         ))}
 
         {assignable && !ticket.assignedToId && (
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => assign.mutate(false)}
-            className={outlineButton}
-          >
+          <Button variant="secondary" disabled={busy} onClick={() => assign.mutate(false)}>
             {t('action.assignSelf')}
-          </button>
+          </Button>
         )}
         {assignable && assignedToMe && (
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => assign.mutate(true)}
-            className={outlineButton}
-          >
+          <Button variant="secondary" disabled={busy} onClick={() => assign.mutate(true)}>
             {t('action.release')}
-          </button>
+          </Button>
         )}
 
         {deletable &&
           (confirmingDelete ? (
-            <button
-              type="button"
+            <Button
+              variant="danger"
               disabled={busy}
-            onClick={() => {
-              remove.mutate(undefined, { onSuccess: () => navigate('/tickets') })
-            }}
-              className={dangerButton}
+              onClick={() => {
+                remove.mutate(undefined, { onSuccess: () => navigate('/tickets') })
+              }}
             >
               {t('action.confirmDelete')}
-            </button>
+            </Button>
           ) : (
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => setConfirmingDelete(true)}
-              className={dangerButton}
-            >
+            <Button variant="danger" disabled={busy} onClick={() => setConfirmingDelete(true)}>
               {t('action.delete')}
-            </button>
+            </Button>
           ))}
       </div>
 

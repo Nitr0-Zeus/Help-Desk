@@ -33,7 +33,7 @@ export function AppLayout() {
         </div>
       )}
 
-      <div className="flex min-w-0 flex-1 flex-col lg:pl-60">
+      <div className="flex min-w-0 flex-1 flex-col">
         <Topbar onOpenMenu={() => setMenuOpen((open) => !open)} menuOpen={menuOpen} />
         <main className="min-w-0 flex-1 px-4 py-6 lg:px-8">
           <div className="mx-auto w-full max-w-6xl">

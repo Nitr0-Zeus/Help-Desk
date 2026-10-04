@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ApiError } from '../../api/client'
 import { Field } from '../../components/ui/Field'
+import { Button } from '../../components/ui/Button'
 import { useI18n } from '../../i18n/I18nProvider'
 import { createTicket } from '../api/TicketsApi'
 import type { Priority } from '../types'
@@ -95,20 +96,12 @@ export default function NewTicketPage() {
         )}
 
         <div className="flex gap-2.5">
-          <button
-            type="submit"
-            disabled={loading}
-            className="h-9 rounded-md bg-[var(--accent)] px-4 text-sm font-medium text-white transition-opacity duration-150 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-          >
+          <Button type="submit" variant="primary" disabled={loading}>
             {loading ? '…' : t('newTicket.submit')}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/tickets')}
-            className="h-9 rounded-md border border-[var(--border)] px-4 text-sm font-medium transition-colors duration-150 hover:bg-[var(--hover)]"
-          >
+          </Button>
+          <Button variant="secondary" onClick={() => navigate('/tickets')}>
             {t('newTicket.cancel')}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

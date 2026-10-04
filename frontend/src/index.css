@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where([data-theme='dark'] *));
+
 /*
  * Theme tokens: light default, dark via [data-theme='dark'].
  * Scene: office daylight for the default; dark for night/low-light use.

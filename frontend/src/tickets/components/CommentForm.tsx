@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useI18n } from '../../i18n/I18nProvider'
+import { Button } from '../../components/ui/Button'
 import { usePostComment } from '../hooks/useTicket'
 import { validateFiles } from './attachment-validation'
 
@@ -107,13 +108,9 @@ export function CommentForm({ ticketId }: { ticketId: number }) {
       )}
 
       <div className="flex items-center gap-2.5">
-        <button
-          type="button"
-          onClick={() => fileInput.current?.click()}
-          className="h-9 rounded-md border border-[var(--border)] px-3 text-sm font-medium transition-colors duration-150 hover:bg-[var(--hover)]"
-        >
+        <Button variant="secondary" onClick={() => fileInput.current?.click()}>
           {t('comment.attach')}
-        </button>
+        </Button>
         <input
           ref={fileInput}
           type="file"
@@ -123,13 +120,14 @@ export function CommentForm({ ticketId }: { ticketId: number }) {
           className="hidden"
           aria-label={t('comment.attach')}
         />
-        <button
+        <Button
           type="submit"
+          variant="primary"
+          className="ml-auto"
           disabled={postComment.isPending || !body.trim()}
-          className="ml-auto h-9 rounded-md bg-[var(--accent)] px-4 text-sm font-medium text-white transition-opacity duration-150 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {postComment.isPending ? '…' : t('comment.submit')}
-        </button>
+        </Button>
       </div>
     </form>
   )

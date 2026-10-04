@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../api/client'
 import { useAuth } from '../auth-provider'
 import { Field } from '../../components/ui/Field'
+import { Button } from '../../components/ui/Button'
 import { useI18n } from '../../i18n/I18nProvider'
 
 export default function RegisterPage() {
@@ -105,13 +106,9 @@ export default function RegisterPage() {
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white transition-opacity duration-150 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-          >
+          <Button type="submit" disabled={loading} className="w-full">
             {loading ? '…' : t('auth.submit.register')}
-          </button>
+          </Button>
         </form>
 
         <p className="mt-5 text-center text-sm text-[var(--text-muted)]">
